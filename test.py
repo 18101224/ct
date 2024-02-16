@@ -1,30 +1,32 @@
-from collections import Counter
 import sys
+from collections import defaultdict
 
-_ = int(input())
-nums = list(map(int, sys.stdin.readline().split()))
-count = Counter(nums)
-result = [None for i in range(len(nums))]
-result[-1] = (-1, -1)
-for idx in range(len(nums) - 2, -1, -1):
-    if count[nums[idx]] < count[nums[idx + 1]]:
-        result[idx] = (idx + 1, count[nums[idx + 1]])
-    else:
-        idx1 = idx + 1
-        while True:
-            if result[idx1][1] == -1:
-                result[idx] = (idx, -1)
-                break
-            else:
-                if count[nums[result[idx1][0]]] > count[idx]:
-                    result[idx] = (result[idx1][0], count[nums[result[idx1][0]]])
-                    break
-                else:
-                    idx1 = result[idx1][0]
+n = int(sys.stdin.readline())
+result = [[1 for i in range(10)]] #한자리
+result[0][0] = 0
 
-for i in result:
-    if i[1] == -1:
-        print(-1, end=' ')
-    else:
-        print(nums[i[0]], end=' ')
+result.append(
+    [ 2 for i in range(10)] #두자리
+)
+result[-1][0]=1
+result[-1][1] = 1
+result[-1][9]=1
 
+for i in range(2,n) :
+    result.append(
+        defaultdict(int)
+    )
+    for i in range(1,9):
+        result[-1][i] = result[-2][i-1]+result[-2][i+1]
+    result[-1][0] = result[-2][1]
+    result[-1][9] = result[-2][8]
+
+if n == 2:
+    print(17)
+elif n == 1 :
+    print(9)
+else:
+    out = 0
+    for i,v in result[-1].items():
+        out+=v
+    print(out%1000000000)
