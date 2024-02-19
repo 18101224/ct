@@ -1,32 +1,14 @@
 import sys
-from collections import defaultdict
 
-n = int(sys.stdin.readline())
-result = [[1 for i in range(10)]] #한자리
-result[0][0] = 0
+n = int(input())
+mab = [[]]
+for i in range(n):
+    mab.append(list(map(int,sys.stdin.readline().split())))
+result = [[1001 for j in range(3)] for i in range(n+1)]
+result[1] = mab[1]
+for i in range(2,n+1):
+    result[i][0] = min(result[i-1][1],result[i-1][2]) + mab[i][0]
+    result[i][1] = min(result[i-1][0],result[i-1][2]) + mab[i][1]
+    result[i][2] = min(result[i-1][0],result[i-1][1]) + mab[i][2]
 
-result.append(
-    [ 2 for i in range(10)] #두자리
-)
-result[-1][0]=1
-result[-1][1] = 1
-result[-1][9]=1
-
-for i in range(2,n) :
-    result.append(
-        defaultdict(int)
-    )
-    for i in range(1,9):
-        result[-1][i] = result[-2][i-1]+result[-2][i+1]
-    result[-1][0] = result[-2][1]
-    result[-1][9] = result[-2][8]
-
-if n == 2:
-    print(17)
-elif n == 1 :
-    print(9)
-else:
-    out = 0
-    for i,v in result[-1].items():
-        out+=v
-    print(out%1000000000)
+print(min(result[-1]))
